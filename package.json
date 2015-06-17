@@ -4,7 +4,9 @@
   "description": "A client-side DOM to vdom parser based on DOMParser API, compatible with virtual-dom",
   "main": "index.js",
   "scripts": {
-    "test": "mocha-phantomjs test/index.html"
+    "test": "test/index.html",
+    "dist": "browserify index.js -s vdomParser > dist.js",
+    "watch": "DEBUG=onchange onchange index.js -- npm run dist"
   },
   "repository": {
     "type": "git",
@@ -26,9 +28,9 @@
     "virtual-dom": "2.x"
   },
   "devDependencies": {
+    "browserify": "^10.2.4",
     "chai": "^3.0.0",
     "mocha": "^2.2.5",
-    "mocha-phantomjs": "^3.5.3",
-    "phantomjs": "^1.9.17"
+    "onchange": "^1.1.0"
   }
 }
