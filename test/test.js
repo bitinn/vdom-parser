@@ -4,7 +4,7 @@ var parser = vdomParser;
 var input, output;
 
 describe('vdom-parser', function () {
-	it('should parse plain text correctly', function () {
+	it('should parse plain text', function () {
 		input = 'test';
 		output = parser(input);
 
@@ -12,7 +12,7 @@ describe('vdom-parser', function () {
 		expect(output.text).to.equal('test');
 	});
 
-	it('should parse html entities correctly', function () {
+	it('should parse html entities', function () {
 		input = '&lt;div&gt;test&lt;/div&gt;';
 		output = parser(input);
 
@@ -20,7 +20,7 @@ describe('vdom-parser', function () {
 		expect(output.text).to.equal('<div>test</div>');
 	});
 
-	it('should parse node correctly', function () {
+	it('should parse simple node', function () {
 		input = '<div>test</div>';
 		output = parser(input);
 
@@ -33,7 +33,7 @@ describe('vdom-parser', function () {
 		expect(children[0].text).to.equal('test');
 	});
 
-	it('should parse whitespace in node correctly', function () {
+	it('should parse whitespace in node', function () {
 		input = '<div> test </div>';
 		output = parser(input);
 
@@ -46,15 +46,20 @@ describe('vdom-parser', function () {
 		expect(children[0].text).to.equal(' test ');
 	});
 
-	it('should ignore leading and trailing whitespace', function () {
+	it('should ignore whitespace around node', function () {
 		input = '  <div>test</div>  ';
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
+
+		var children = output.children;
+		expect(children).to.have.length(1);
+		expect(children[0].type).to.equal('VirtualText');
+		expect(children[0].text).to.equal('test');
 	});
 
-	it('should parse html entities in node correctly', function () {
+	it('should parse html entities in node', function () {
 		input = '<div>&lt;div&gt;test&lt;/div&gt;</div>';
 		output = parser(input);
 
@@ -67,7 +72,7 @@ describe('vdom-parser', function () {
 		expect(children[0].text).to.equal('<div>test</div>');
 	});
 
-	it('should parse empty node correctly', function () {
+	it('should parse empty node', function () {
 		input = '<div></div>';
 		output = parser(input);
 
@@ -89,7 +94,7 @@ describe('vdom-parser', function () {
 		expect(children[0].tagName).to.equal('P');
 	});
 
-	it('should parse node id', function () {
+	it('should parse id attribute on node', function () {
 		input = '<div id="abc">test</div>';
 		output = parser(input);
 
@@ -98,110 +103,82 @@ describe('vdom-parser', function () {
 		expect(output.properties.id).to.equal('abc');
 	});
 
-	it('should parse node class', function () {
+	it('should parse class attribute on node', function () {
 		input = '<div class="abc">test</div>';
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
-		expect(output.properties.class).to.equal('abc');
+		expect(output.properties.className).to.equal('abc');
 	});
+
+	it('should parse class attribute on node when there are multiple classes', function () {
+		input = '<div class="abc def">test</div>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.properties.className).to.equal('abc def');
+	});
+
+	it('should preserve camelcase attribute', function () {
+		input = '<input tabIndex="1">';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('INPUT');
+		expect(output.properties.tabIndex).to.equal('1');
+	});
+
+	it('should parse multiple attributes on node', function () {
+		input = '<input tabIndex="1" name="abc" value="123">';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('INPUT');
+		expect(output.properties.tabIndex).to.equal('1');
+		expect(output.properties.name).to.equal('abc');
+		expect(output.properties.value).to.equal('123');
+	});
+
+	it('should parse style attribute on node', function () {
+		input = '<div style="color: red;">test</div>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.properties.style).to.eql({
+			color: 'red'
+		});
+	});
+
+	it('should parse complex style attribute on node', function () {
+		input = '<div style="color:red;width:100px;">test</div>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.properties.style).to.eql({
+			color: 'red'
+			, width: '100px'
+		});
+	});
+
+	it('should parse bracket style attribute on node', function () {
+		input = '<div style="color: red; width: 100px; background: rgba(0, 0, 0)">test</div>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.properties.style).to.eql({
+			color: 'red'
+			, width: '100px'
+			, background: 'rgba(0, 0, 0)'
+		});
+	});
+
 
 	/*
-	describe('when converting a tag', function () {
-
-		it('parses a div with classes correctly', function () {
-
-			var html = '<div class="foo bar"></div>';
-
-			var converted = convertHTML(html);
-			converted.properties.className.should.equal('foo bar');
-		});
-
-		it('parses an input with tabIndex correctly', function () {
-
-			var html = '<input tabIndex="1"></input>';
-
-			var converted = convertHTML(html);
-			converted.properties.tabIndex.should.equal(1);
-		});
-
-		it('parses a div with 1 style correctly', function () {
-
-			var html = '<div style="top: -7px;"></div>';
-			var styles = {
-				top: '-7px'
-			};
-
-			var converted = convertHTML(html);
-			converted.properties.style.should.deep.equal(styles);
-		});
-
-		it('parses a div with 1 style without trailing semicolon correctly', function () {
-
-			var html = '<div style="top: -7px"></div>';
-			var styles = {
-				top: '-7px'
-			};
-
-			var converted = convertHTML(html);
-			converted.properties.style.should.deep.equal(styles);
-		});
-
-		it('parses a div with styles correctly', function () {
-
-			var html = '<div style="top: -7px; left: -6px; background-color: rgb(0,0,132);"></div>';
-			var styles = {
-				top: '-7px',
-				left: '-6px',
-				'background-color': 'rgb(0, 0, 132)'
-			};
-
-			var converted = convertHTML(html);
-			converted.properties.style.should.deep.equal(styles);
-		});
-
-		it('parses a div with styles without trailing semicolon correctly', function () {
-
-			var html = '<div style="top: -7px; left: -6px; background-color: rgb(0,0,132)"></div>';
-			var styles = {
-				top: '-7px',
-				left: '-6px',
-				'background-color': 'rgb(0, 0, 132)'
-			};
-
-			var converted = convertHTML(html);
-			converted.properties.style.should.deep.equal(styles);
-		});
-
-		it('parses a div with styles correctly when spaces are missing', function () {
-
-			var html = '<div style="top:-7px;left:-6px;background-color:rgb(0,0,132);"></div>';
-			var styles = {
-				top: '-7px',
-				left: '-6px',
-				'background-color': 'rgb(0, 0, 132)'
-			};
-
-			var converted = convertHTML(html);
-			converted.properties.style.should.deep.equal(styles);
-		});
-
-		it('parses a div with styles correctly when spaces are abundant', function () {
-
-			var html = '<div style="   top:  -7px  ;    left :  -6px ;   background-color :  rgb( 0 , 0 , 132 )  ;  "></div>';
-			var styles = {
-				top: '-7px',
-				left: '-6px',
-				'background-color': 'rgb(0, 0, 132)'
-			};
-
-			var converted = convertHTML(html);
-			converted.properties.style.should.deep.equal(styles);
-		});
-
-	});
-
 	describe('when converting a tag with data attributes', function () {
 		it('converts a single data attribute correctly', function () {
 

@@ -9,6 +9,8 @@ var VNode = require('virtual-dom/vnode/vnode');
 var VText = require('virtual-dom/vnode/vtext');
 var domParser = new DOMParser();
 
+var propertyMap = require('./property-map');
+
 module.exports = parser;
 
 /**
@@ -103,8 +105,10 @@ function createProperties(el) {
 		return properties;
 	}
 
+	var attr;
 	for (var i = 0; i < el.attributes.length; i++) {
-		properties[el.attributes[i].name] = createProperty(el.attributes[i]);
+		attr = createProperty(el.attributes[i]);
+		properties[attr.name] = attr.value;
 	};
 
 	return properties;
@@ -114,9 +118,35 @@ function createProperties(el) {
  * Create property from dom attribute 
  *
  * @param   Object  attr  DOM attribute
- * @return  Mixed         String or Object
+ * @return  Object        Normalized attribute
  */
 function createProperty(attr) {
-	// TODO: parse special structure
-	return attr.value;
+	var name, value;
+
+	// using a map to find the correct case of property name
+	if (propertyMap[attr.name]) {
+		name = propertyMap[attr.name];
+	} else {
+		name = attr.name;
+	}
+
+	// special cases for values
+	if (name === 'style') {
+		var style = {};
+		attr.value.split(';').forEach(function (s) {
+			var pos = s.indexOf(':');
+			if (pos < 0) {
+				return;
+			}
+			style[s.substr(0, pos).trim()] = s.substr(pos + 1).trim();
+		});
+		value = style;
+	} else {
+		value = attr.value;
+	}
+
+	return {
+		name: name
+		, value: value
+	};
 }
