@@ -1,0 +1,34 @@
+{
+  "name": "vdom-parser",
+  "version": "1.0.0",
+  "description": "A client-side DOM to vdom parser based on DOMParser API, compatible with virtual-dom",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha-phantomjs test/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitinn/vdom-parser.git"
+  },
+  "keywords": [
+    "dom",
+    "vdom",
+    "parser",
+    "virtual-dom"
+  ],
+  "author": "David Frank",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bitinn/vdom-parser/issues"
+  },
+  "homepage": "https://github.com/bitinn/vdom-parser#readme",
+  "peerDependencies": {
+    "virtual-dom": "2.x"
+  },
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "mocha": "^2.2.5",
+    "mocha-phantomjs": "^3.5.3",
+    "phantomjs": "^1.9.17"
+  }
+}
