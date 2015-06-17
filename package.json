@@ -4,7 +4,6 @@
   "description": "A client-side DOM to vdom parser based on DOMParser API, compatible with virtual-dom",
   "main": "index.js",
   "scripts": {
-    "test": "test/index.html",
     "dist": "browserify index.js -s vdomParser > dist.js",
     "watch": "DEBUG=onchange onchange index.js -- npm run dist"
   },
