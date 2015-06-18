@@ -28,8 +28,11 @@
 	DOMParser_proto.parseFromString = function(markup, type) {
 		if (/^\s*text\/html\s*(?:;|$)/i.test(type)) {
 			var doc = document.implementation.createHTMLDocument("");
-			if (markup.toLowerCase().indexOf('<!doctype') > -1) {
+			// Note: make polyfill behave like native domparser when processing these tags
+			if (markup.indexOf('<!DOCTYPE') > -1) {
 				doc.documentElement.innerHTML = markup;
+			} else if (markup.indexOf('<title') > -1 || markup.indexOf('<script') > -1 || markup.indexOf('<style') > -1) {
+				doc.head.innerHTML = markup;
 			} else {
 				doc.body.innerHTML = markup;
 			}
