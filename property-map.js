@@ -5,7 +5,9 @@
  * Necessary to map dom attributes back to vdom properties
  */
 
-// invert of https'://www.npmjs.com/package/html-attributes
+'use strict';
+
+// invert of https://www.npmjs.com/package/html-attributes
 var properties = {
 	'abbr': 'abbr'
 	, 'accept': 'accept'

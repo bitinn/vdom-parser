@@ -26,6 +26,7 @@ describe('vdom-parser', function () {
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
+		expect(output.namespace).to.equal('http://www.w3.org/1999/xhtml');
 
 		var children = output.children;
 		expect(children).to.have.length(1);
@@ -258,7 +259,26 @@ describe('vdom-parser', function () {
 		expect(children[0].text).to.equal('h1 {color:red;}');
 	});
 
-	it('should handle cdata', function () {
+	it('should parse svg tag with foreign namespace', function () {
+		input = '<svg class="icon"><use xlink:href="/icon.svg#name"></use></svg>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('svg');
+		expect(output.namespace).to.equal('http://www.w3.org/2000/svg');
+
+		var children = output.children;
+		expect(children).to.have.length(1);
+
+		var useTag = children[0];
+		expect(useTag.type).to.equal('VirtualNode');
+		expect(useTag.tagName).to.equal('use');
+		expect(output.properties.class).to.equal('icon');
+		expect(useTag.properties['xlink:href'].value).to.equal('/icon.svg#name');
+		expect(useTag.properties['xlink:href'].namespace).to.equal('http://www.w3.org/1999/xlink');
+	});
+
+	it('should handle cdata with fallback', function () {
 		input = '<![CDATA[ hey ]]>';
 		output = parser(input);
 
@@ -266,7 +286,7 @@ describe('vdom-parser', function () {
 		expect(output.text).to.equal('');
 	});
 
-	it('should handle doctype', function () {
+	it('should handle doctype with fallback', function () {
 		input = '<!DOCTYPE html>';
 		output = parser(input);
 
@@ -274,7 +294,7 @@ describe('vdom-parser', function () {
 		expect(output.text).to.equal('');
 	});
 
-	it('should handle html comment', function () {
+	it('should handle html comment with fallback', function () {
 		input = '<!-- comment -->';
 		output = parser(input);
 
@@ -282,7 +302,7 @@ describe('vdom-parser', function () {
 		expect(output.text).to.equal('');
 	});
 
-	it('should handle empty input', function () {
+	it('should handle empty input with fallback', function () {
 		input = '';
 		output = parser(input);
 

@@ -20,9 +20,9 @@ Hence `vdom-parser`, a small module that bridges the gap between server-side and
 
 # Features
 
-- Use [DOMParser](https://developer.mozilla.org/en-US/docs/Web/API/DOMParser) for better performance and much smaller filesize.
-- Peer dependent on `virtual-dom` major version to prevent version lockdown.
-- Test cases to cover common usage such as inline svg.
+- Use [DOMParser](https://developer.mozilla.org/en-US/docs/Web/API/DOMParser) for better performance and smaller filesize.
+- No direct dependency, peer-dependent on `virtual-dom` major version.
+- Test cases covering common usage such as inline svg, style and script tags.
 
 
 # Install
@@ -69,7 +69,7 @@ MIT
 
 # Acknowledgement
 
-Thanks to [marcelklehr/vdom-virtualize](https://github.com/marcelklehr/vdom-virtualize) and [TimBeyer/html-to-vdom](https://github.com/TimBeyer/html-to-vdom) for providing reference on this topic.
+Thanks to [marcelklehr/vdom-virtualize](https://github.com/marcelklehr/vdom-virtualize) and [TimBeyer/html-to-vdom](https://github.com/TimBeyer/html-to-vdom) for their work on this topic.
 
 
 [npm-image]: https://img.shields.io/npm/v/vdom-parser.svg?style=flat-square

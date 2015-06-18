@@ -5,11 +5,16 @@
  * A client-side DOM to vdom parser based on DOMParser API
  */
 
+'use strict';
+
 var VNode = require('virtual-dom/vnode/vnode');
 var VText = require('virtual-dom/vnode/vtext');
 var domParser = new DOMParser();
 
 var propertyMap = require('./property-map');
+var namespaceMap = require('./namespace-map');
+
+var HTML_NAMESPACE = 'http://www.w3.org/1999/xhtml';
 
 module.exports = parser;
 
@@ -119,12 +124,28 @@ function createProperties(el) {
 		return properties;
 	}
 
+	var ns;
+	if (el.namespaceURI && el.namespaceURI !== HTML_NAMESPACE) {
+		ns = el.namespaceURI;
+	}
+
 	var attr;
 	for (var i = 0; i < el.attributes.length; i++) {
-		attr = createProperty(el.attributes[i]);
+		if (ns) {
+			attr = createPropertyNS(el.attributes[i]);
+		} else {
+			attr = createProperty(el.attributes[i]);
+		}
+
+		// special case, namespaced attribute, use properties.foobar
+		if (attr.ns) {
+			properties[attr.name] = {
+				namespace: attr.ns
+				, value: attr.value
+			};
 
 		// special case, use properties.attributes.foobar
-		if (attr.isAttr) {
+		} else if (attr.isAttr) {
 			// init attributes object only when necessary
 			if (!properties.attributes) {
 				properties.attributes = {}
@@ -179,5 +200,21 @@ function createProperty(attr) {
 		name: name
 		, value: value
 		, isAttr: isAttr || false
+	};
+}
+
+/**
+ * Create namespaced property from dom attribute 
+ *
+ * @param   Object  attr  DOM attribute
+ * @return  Object        Normalized attribute
+ */
+function createPropertyNS(attr) {
+	var name, value;
+
+	return {
+		name: attr.name
+		, value: attr.value
+		, ns: namespaceMap[attr.name] || ''
 	};
 }
