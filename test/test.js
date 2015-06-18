@@ -335,6 +335,14 @@ describe('vdom-parser', function () {
 
 	it('should handle whitespace input with fallback', function () {
 		input = '   ';
+
+		// see html-domparser.js comment
+		// in short, polyfill requires input be trimmed first
+		// but in most case you should be using dom element so this is not a big deal
+		if (window.usingDomParserPolyfill) {
+			input = input.trim()
+		}
+
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualText');
