@@ -4,9 +4,10 @@ vdom-parser
 
 [![npm version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
-[![coverage status][coveralls-image]][coveralls-url]
 
 A client-side DOM to vdom parser based on DOMParser API, compatible with [virtual-dom](https://github.com/Matt-Esch/virtual-dom).
+
+[![browser test report](sauce-lab-image)](sauce-lab-url)
 
 
 # Motivation
@@ -21,7 +22,8 @@ Hence `vdom-parser`, a small module that bridges the gap between server-side and
 # Features
 
 - Use [DOMParser](https://developer.mozilla.org/en-US/docs/Web/API/DOMParser) for better performance and smaller filesize.
-- No direct dependency, peer-dependent on `virtual-dom` major version.
+- Optional [polyfill for older browsers](https://gist.github.com/eligrey/1129031).
+- No direct dependency, peer-dependent on `virtual-dom` major version (v2 currently).
 - Test cases covering common usage such as inline svg, style and script tags.
 
 
@@ -78,3 +80,6 @@ Thanks to [marcelklehr/vdom-virtualize](https://github.com/marcelklehr/vdom-virt
 [travis-url]: https://travis-ci.org/bitinn/vdom-parser
 [coveralls-image]: https://img.shields.io/coveralls/bitinn/vdom-parser.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/bitinn/vdom-parser
+
+[sauce-lab-image]: https://saucelabs.com/buildstatus/bitinn-vdom
+[sauce-lab-url]: https://saucelabs.com/u/bitinn-vdom

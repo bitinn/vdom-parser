@@ -31,3 +31,6 @@ node_modules
 
 # Coveralls token files
 .coveralls.yml
+
+# Zuul token files
+.zuulrc

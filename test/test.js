@@ -1,6 +1,10 @@
 
+require('./html-domparser');
+
+var chai = require('chai');
 var expect = chai.expect;
-var parser = vdomParser;
+
+var parser = require('../index');
 var input, output;
 
 describe('vdom-parser', function () {
@@ -49,6 +53,14 @@ describe('vdom-parser', function () {
 
 	it('should ignore whitespace around node', function () {
 		input = '  <div>test</div>  ';
+
+		// see html-domparser.js comment
+		// in short, polyfill requires input be trimmed first
+		// but in most case you should be using dom element so this is not a big deal
+		if (window.usingDomParserPolyfill) {
+			input = input.trim()
+		}
+
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualNode');
@@ -171,15 +183,16 @@ describe('vdom-parser', function () {
 	});
 
 	it('should parse bracket style attribute on node', function () {
-		input = '<div style="color: red; width: 100px; background: rgba(0, 0, 0)">test</div>';
+		input = '<div style="color: red; width: 100px; background-url: url(test.jpg)">test</div>';
 		output = parser(input);
+		console.log(output.properties.style);
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
 		expect(output.properties.style).to.eql({
 			color: 'red'
 			, width: '100px'
-			, background: 'rgba(0, 0, 0)'
+			, 'background-url': 'url(test.jpg)'
 		});
 	});
 
@@ -320,13 +333,29 @@ describe('vdom-parser', function () {
 		expect(output.text).to.equal('');
 	});
 
+	it('should handle whitespace input with fallback', function () {
+		input = '   ';
+
+		// see html-domparser.js comment
+		// in short, polyfill requires input be trimmed first
+		// but in most case you should be using dom element so this is not a big deal
+		if (window.usingDomParserPolyfill) {
+			input = input.trim()
+		}
+
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualText');
+		expect(output.text).to.equal('');
+	});
+
 	it('should handle dom node input', function () {
-		input = document.getElementById('mocha');
+		input = document.getElementById('zuul');
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
-		expect(output.properties.id).to.equal('mocha');
+		expect(output.properties.id).to.equal('zuul');
 	});
 
 	it('should handle document body', function () {
@@ -351,5 +380,17 @@ describe('vdom-parser', function () {
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('HTML');
+	});
+
+	it('should throw if input is not supported', function () {
+		input = [];
+		expect(function() {
+			output = parser(input);
+		}).to.throw(Error);
+
+		input = {};
+		expect(function() {
+			output = parser(input);
+		}).to.throw(Error);
 	});
 });
