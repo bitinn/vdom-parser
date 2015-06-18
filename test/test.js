@@ -1,4 +1,6 @@
 
+require('./html-domparser');
+
 var chai = require('chai');
 var expect = chai.expect;
 
