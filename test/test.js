@@ -298,4 +298,28 @@ describe('vdom-parser', function () {
 		expect(output.tagName).to.equal('DIV');
 		expect(output.properties.id).to.equal('mocha');
 	});
+
+	it('should handle document body', function () {
+		input = document.body;
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('BODY');
+	});
+
+	it('should handle document head', function () {
+		input = document.head;
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('HEAD');
+	});
+
+	it('should handle document', function () {
+		input = document.documentElement;
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('HTML');
+	});
 });

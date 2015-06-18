@@ -53,11 +53,13 @@ See [test cases](https://github.com/bitinn/vdom-parser/blob/master/test/test.js)
 
 ## parser(node)
 
-Returns a `VNode`
+Returns a `VNode` or `VText`, see [virtual-dom documentation](https://github.com/Matt-Esch/virtual-dom/tree/master/docs).
 
 ### node
 
-Should be a DOM Element
+Should be a DOM Element or HTML String.
+
+Note: for string input, we only support nodes under `document.head` or `document.body`, not `<html>`, `<head>` or `<body>`.
 
 
 # License
