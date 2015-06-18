@@ -1,6 +1,8 @@
 
+var chai = require('chai');
 var expect = chai.expect;
-var parser = vdomParser;
+
+var parser = require('../index');
 var input, output;
 
 describe('vdom-parser', function () {
@@ -321,12 +323,12 @@ describe('vdom-parser', function () {
 	});
 
 	it('should handle dom node input', function () {
-		input = document.getElementById('mocha');
+		input = document.getElementById('zuul');
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
-		expect(output.properties.id).to.equal('mocha');
+		expect(output.properties.id).to.equal('zuul');
 	});
 
 	it('should handle document body', function () {
@@ -351,5 +353,27 @@ describe('vdom-parser', function () {
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('HTML');
+	});
+
+	it('should throw if input is not supported', function () {
+		input = [];
+		expect(function() {
+			output = parser(input);
+		}).to.throw(Error);
+
+		input = {};
+		expect(function() {
+			output = parser(input);
+		}).to.throw(Error);
+
+		input = null;
+		expect(function() {
+			output = parser(input);
+		}).to.throw(Error);
+
+		input = undefined;
+		expect(function() {
+			output = parser(input);
+		}).to.throw(Error);
 	});
 });

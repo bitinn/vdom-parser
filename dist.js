@@ -43,6 +43,10 @@ function parser(el) {
 		}
 	}
 
+	if (typeof el !== 'object' || !el || !el.nodeType) { 
+		throw new Error('invalid dom node', el);
+	}
+
 	return createNode(el);
 }
 
@@ -53,13 +57,8 @@ function parser(el) {
  * @return  Object      VNode or VText
  */
 function createNode(el) {
-	// expect valid dom node
-	if (typeof el !== 'object' || !el || !el.nodeType) { 
-		console.error('invalid dom node, fallback to empty text node', el);
-		return new VText('');
-
 	// html comment is not currently supported by virtual-dom
-	} else if (el.nodeType === 3) {
+	if (el.nodeType === 3) {
 		return createVirtualTextNode(el);
 
 	// cdata or doctype is not currently supported by virtual-dom
@@ -93,7 +92,7 @@ function createVirtualDomNode(el) {
 		, createProperties(el)
 		, createChildren(el)
 		, null
-		, el.namespaceURI || null
+		, el.namespaceURI
 	);
 }
 
