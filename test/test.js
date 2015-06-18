@@ -185,7 +185,6 @@ describe('vdom-parser', function () {
 	it('should parse bracket style attribute on node', function () {
 		input = '<div style="color: red; width: 100px; background-url: url(test.jpg)">test</div>';
 		output = parser(input);
-		console.log(output.properties.style);
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
@@ -311,6 +310,7 @@ describe('vdom-parser', function () {
 
 	it('should handle doctype with fallback', function () {
 		input = '<!DOCTYPE html>';
+
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualText');
@@ -350,12 +350,13 @@ describe('vdom-parser', function () {
 	});
 
 	it('should handle dom node input', function () {
-		input = document.getElementById('zuul');
+		input = document.createElement('div');
+		input.id = 'test';
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
-		expect(output.properties.id).to.equal('zuul');
+		expect(output.properties.id).to.equal('test');
 	});
 
 	it('should handle document body', function () {
