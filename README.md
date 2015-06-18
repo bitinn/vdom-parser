@@ -2,11 +2,11 @@
 vdom-parser
 ===========
 
+A client-side DOM to vdom parser based on DOMParser API, compatible with [virtual-dom](https://github.com/Matt-Esch/virtual-dom).
+
 [![npm version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
 [![coverage status][coveralls-image]][coveralls-url]
-
-A client-side DOM to vdom parser based on DOMParser API, compatible with [virtual-dom](https://github.com/Matt-Esch/virtual-dom).
 
 [![browser test report][sauce-labs-image]][sauce-labs-url]
 
@@ -82,5 +82,5 @@ Thanks to [marcelklehr/vdom-virtualize](https://github.com/marcelklehr/vdom-virt
 [coveralls-image]: https://img.shields.io/coveralls/bitinn/vdom-parser.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/bitinn/vdom-parser
 
-[sauce-labs-image]: https://saucelabs.com/buildstatus/bitinn-vdom
+[sauce-labs-image]: https://saucelabs.com/browser-matrix/bitinn-vdom.svg
 [sauce-labs-url]: https://saucelabs.com/u/bitinn-vdom
