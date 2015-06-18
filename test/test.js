@@ -259,6 +259,16 @@ describe('vdom-parser', function () {
 		expect(children[0].text).to.equal('h1 {color:red;}');
 	});
 
+	it('should parse svg tag', function () {
+		input = '<svg viewBox="0 0 10 10"></svg>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('svg');
+		expect(output.namespace).to.equal('http://www.w3.org/2000/svg');
+		expect(output.properties.viewBox).to.equal('0 0 10 10');
+	});
+
 	it('should parse svg tag with foreign namespace', function () {
 		input = '<svg class="icon"><use xlink:href="/icon.svg#name"></use></svg>';
 		output = parser(input);
