@@ -4,6 +4,7 @@
   "description": "A client-side DOM to vdom parser based on DOMParser API, compatible with virtual-dom",
   "main": "index.js",
   "scripts": {
+    "test-lab": "DEBUG=zuul* zuul --ui mocha-bdd -- test/test.js",
     "test-local": "DEBUG=zuul* zuul --open --local 8080 --ui mocha-bdd -- test/test.js",
     "dist": "browserify index.js -s vdomParser > dist.js"
   },
@@ -31,6 +32,7 @@
     "chai": "^3.0.0",
     "mocha": "^2.2.5",
     "onchange": "^1.1.0",
+    "virtual-dom": "^2.0.1",
     "zuul": "^3.0.0"
   }
 }
