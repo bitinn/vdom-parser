@@ -26,15 +26,16 @@ module.exports = parser;
  * @return  Object      VNode or VText
  */
 function parser(el) {
+	// empty input fallback to empty text node
+	if (!el) {
+		return createNode(document.createTextNode(''));
+	}
+
 	if (typeof el === 'string') {
 		var doc = domParser.parseFromString(el, 'text/html');
 
-		// null response, fallback to empty text node
-		if (!doc) {
-			el = document.createTextNode('');
-
 		// most tags default to body
-		} else if (doc.body.firstChild) {
+		if (doc.body.firstChild) {
 			el = doc.body.firstChild;
 
 		// some tags, like script and title, default to head

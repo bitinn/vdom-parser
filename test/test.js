@@ -333,6 +333,14 @@ describe('vdom-parser', function () {
 		expect(output.text).to.equal('');
 	});
 
+	it('should handle whitespace input with fallback', function () {
+		input = '   ';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualText');
+		expect(output.text).to.equal('');
+	});
+
 	it('should handle dom node input', function () {
 		input = document.getElementById('zuul');
 		output = parser(input);
@@ -373,16 +381,6 @@ describe('vdom-parser', function () {
 		}).to.throw(Error);
 
 		input = {};
-		expect(function() {
-			output = parser(input);
-		}).to.throw(Error);
-
-		input = null;
-		expect(function() {
-			output = parser(input);
-		}).to.throw(Error);
-
-		input = undefined;
 		expect(function() {
 			output = parser(input);
 		}).to.throw(Error);
