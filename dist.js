@@ -23,7 +23,19 @@ module.exports = parser;
 function parser(el) {
 	if (typeof el === 'string') {
 		var doc = domParser.parseFromString(el, 'text/html');
-		el = doc.body.firstChild;
+		// most tags default to body
+		if (doc.body.firstChild) {
+			el = doc.body.firstChild;
+		// some tags, like script and title, default to head
+		} else if (doc.head.firstChild) {
+			el = doc.head.firstChild;
+		// special case for html comment, cdata, doctype
+		} else if (doc.firstChild && doc.firstChild !== doc.documentElement) {
+			el = doc.firstChild;
+		// fallback to empty text node
+		} else {
+			el = document.createTextNode('');
+		}
 	}
 
 	return createNode(el);
@@ -37,8 +49,9 @@ function parser(el) {
  */
 function createNode(el) {
 	// expect valid dom node
-	if (typeof el !== 'object' || !el.nodeType) { 
-		throw new Error('unknown dom element');
+	if (typeof el !== 'object' || !el || !el.nodeType) { 
+		console.error('invalid dom node, fallback to empty text node', el);
+		return new VText('');
 
 	// html comment is not currently supported by virtual-dom
 	} else if (el.nodeType === 3) {
@@ -49,7 +62,8 @@ function createNode(el) {
 		return createVirtualDomNode(el);
 	}
 
-	throw new Error('unsupported dom node type');
+	// default to empty text node
+	return new VText('');
 }
 
 /**
@@ -109,7 +123,19 @@ function createProperties(el) {
 	var attr;
 	for (var i = 0; i < el.attributes.length; i++) {
 		attr = createProperty(el.attributes[i]);
-		properties[attr.name] = attr.value;
+
+		// special case, use properties.attributes.foobar
+		if (attr.isAttr) {
+			// init attributes object only when necessary
+			if (!properties.attributes) {
+				properties.attributes = {}
+			}
+			properties.attributes[attr.name] = attr.value;
+
+		// default case, use properties.foobar
+		} else {
+			properties[attr.name] = attr.value;
+		}
 	};
 
 	return properties;
@@ -122,7 +148,7 @@ function createProperties(el) {
  * @return  Object        Normalized attribute
  */
 function createProperty(attr) {
-	var name, value;
+	var name, value, isAttr;
 
 	// using a map to find the correct case of property name
 	if (propertyMap[attr.name]) {
@@ -131,7 +157,7 @@ function createProperty(attr) {
 		name = attr.name;
 	}
 
-	// special cases for values
+	// special cases for style attribute, we default to properties.style
 	if (name === 'style') {
 		var style = {};
 		attr.value.split(';').forEach(function (s) {
@@ -142,6 +168,10 @@ function createProperty(attr) {
 			style[s.substr(0, pos).trim()] = s.substr(pos + 1).trim();
 		});
 		value = style;
+	// special cases for data attribute, we default to properties.attributes.data
+	} else if (name.indexOf('data-') === 0) {
+		value = attr.value;
+		isAttr = true;
 	} else {
 		value = attr.value;
 	}
@@ -149,6 +179,7 @@ function createProperty(attr) {
 	return {
 		name: name
 		, value: value
+		, isAttr: isAttr || false
 	};
 }
 

@@ -92,6 +92,11 @@ describe('vdom-parser', function () {
 		expect(children).to.have.length(1);
 		expect(children[0].type).to.equal('VirtualNode');
 		expect(children[0].tagName).to.equal('P');
+
+		var textChildren = children[0].children;
+		expect(textChildren).to.have.length(1);
+		expect(textChildren[0].type).to.equal('VirtualText');
+		expect(textChildren[0].text).to.equal('test');
 	});
 
 	it('should parse id attribute on node', function () {
@@ -177,189 +182,120 @@ describe('vdom-parser', function () {
 		});
 	});
 
+	it('should parse data attribute on node', function () {
+		input = '<div data-my-attr="abc">test</div>';
+		output = parser(input);
 
-	/*
-	describe('when converting a tag with data attributes', function () {
-		it('converts a single data attribute correctly', function () {
-
-			var html = '<div data-test="foobar"></div>';
-
-			var converted = convertHTML(html);
-
-			should.exist(converted.properties.dataset.test);
-			converted.properties.dataset.test.should.eql('foobar');
-
-			should.exist(converted.properties['data-test']);
-			converted.properties['data-test'].should.eql('foobar');
-		});
-
-		it('converts a single hyphenated data attribute correctly', function () {
-
-			var html = '<div data-test-data="foobar"></div>';
-
-			var converted = convertHTML(html);
-
-			should.exist(converted.properties.dataset.testData);
-			converted.properties.dataset.testData.should.eql('foobar');
-
-			should.exist(converted.properties['data-test-data']);
-			converted.properties['data-test-data'].should.eql('foobar');
-		});
-
-		 it('converts multiple data attributes correctly', function () {
-
-			var html = '<div data-test="foobar" data-foobar="test"></div>';
-
-			var converted = convertHTML(html);
-
-			should.exist(converted.properties.dataset.test);
-			converted.properties.dataset.test.should.eql('foobar');
-
-			should.exist(converted.properties.dataset.foobar);
-			converted.properties.dataset.foobar.should.eql('test');
-
-			should.exist(converted.properties['data-test']);
-			converted.properties['data-test'].should.eql('foobar');
-
-			should.exist(converted.properties['data-foobar']);
-			converted.properties['data-foobar'].should.eql('test');
-		});
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.properties.attributes['data-my-attr']).to.equal('abc');
 	});
 
-	describe('when converting a tag containing text', function () {
-		it('converts to a tag with a child VText node correctly', function () {
-			var html = '<div>Test</div>';
-			var converted = convertHTML(html);
+	it('should parse multiple data attribute on node', function () {
+		input = '<div data-src="http://example.com/" data-src-title="abc">test</div>';
+		output = parser(input);
 
-			should.exist(converted.children);
-			converted.children.length.should.eql(1);
-			converted.children[0].text.should.eql('Test');
-		});
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.properties.attributes['data-src']).to.equal('http://example.com/');
+		expect(output.properties.attributes['data-src-title']).to.equal('abc');
 	});
 
-	describe('when converting a tag containing a child tag', function () {
-		it('converts to a tag with a child node correctly', function () {
-			var html = '<div class="parent"><span class="child"></span></div>';
-			var converted = convertHTML(html);
+	it('should parse for attribute on label', function () {
+		input = '<label for="abc"></label>';
+		output = parser(input);
 
-			converted.tagName.should.eql('DIV');
-			converted.properties.className.should.eql('parent');
-
-			should.exist(converted.children);
-			converted.children.length.should.eql(1);
-			converted.children[0].tagName.should.eql('SPAN');
-			converted.children[0].properties.className.should.eql('child');
-		});
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('LABEL');
+		expect(output.properties.htmlFor).to.equal('abc');
+		expect(output.properties.attributes).to.be.undefined;
 	});
 
-	describe('when converting a tag containing a child tag with text', function () {
-		it('converts to a tag with a child node correctly', function () {
-			var html = '<div class="parent"><span class="child">Test</span></div>';
-			var converted = convertHTML(html);
+	it('should parse empty label', function () {
+		input = '<label></label>';
+		output = parser(input);
 
-			converted.tagName.should.eql('DIV');
-			converted.properties.className.should.eql('parent');
-
-			should.exist(converted.children);
-			converted.children.length.should.eql(1);
-			converted.children[0].tagName.should.eql('SPAN');
-			converted.children[0].properties.className.should.eql('child');
-
-			converted.children[0].children[0].text.should.eql('Test');
-		});
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('LABEL');
+		expect(output.properties).to.eql({});
 	});
 
-	describe('when converting a label containing the `for` attribute', function () {
-		it('sets the htmlFor attribute correspondingly', function () {
-			var html = '<label for="foobar"></label>';
-			var converted = convertHTML(html);
-			should.exist(converted.properties.htmlFor);
-			converted.properties.htmlFor.should.eql('foobar');
-		});
+	it('should parse html entities on attribute', function () {
+		input = '<input type="text" name="test" value="&quot;test&quot;" placeholder="&quot;test&quot;" alt="&quot;test&quot;" title="&quot;test&quot;">';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('INPUT');
+		expect(output.properties.placeholder).to.equal('"test"');
+		expect(output.properties.alt).to.equal('"test"');
+		expect(output.properties.title).to.equal('"test"');
+		expect(output.properties.value).to.equal('"test"');
 	});
 
-	describe('when converting a label not containing the `for` attribute', function () {
-		it('does not set the htmlFor attribute correspondingly', function () {
-			var html = '<label></label>';
-			var converted = convertHTML(html);
-			should.not.exist(converted.properties.htmlFor);
-		});
+	it('should parse script tag', function () {
+		input = '<script>console.log("test")</script>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('SCRIPT');
+
+		var children = output.children;
+		expect(children).to.have.length(1);
+		expect(children[0].type).to.equal('VirtualText');
+		expect(children[0].text).to.equal('console.log("test")');
 	});
 
-	describe('when converting HTML containing html entities', function () {
-		it('converts them back to characters', function () {
-			var html = '<span>&lt;a href&equals;&quot;foobar.com&quot;&gt;test&lt;&sol;a&gt;</span>';
-			var converted = convertHTML(html);
-			converted.tagName.should.eql('SPAN');
-			converted.children.length.should.eql(1);
-			converted.children[0].text.should.eql('<a href="foobar.com">test</a>');
-		});
+	it('should parse style tag', function () {
+		input = '<style>h1 {color:red;}</style>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('STYLE');
+
+		var children = output.children;
+		expect(children).to.have.length(1);
+		expect(children[0].type).to.equal('VirtualText');
+		expect(children[0].text).to.equal('h1 {color:red;}');
 	});
 
-	describe('when converting HTML containing html entities in placeholder, alt or title', function () {
-		it('converts them to characters', function () {
-			var html = '<input type="text" placeholder="&quot;test&quot;" alt="&quot;test&quot;" title="&quot;test&quot;">';
-			var converted = convertHTML(html);
-			converted.tagName.should.eql('INPUT');
-			converted.properties.placeholder.should.eql('"test"');
-			converted.properties.alt.should.eql('"test"');
-			converted.properties.title.should.eql('"test"');
-		});
+	it('should handle cdata', function () {
+		input = '<![CDATA[ hey ]]>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualText');
+		expect(output.text).to.equal('');
 	});
 
-	describe('when converting HTML containing a script tag', function () {
-		it('converts to a virtualdom node', function () {
-			var html = '<div><script src="foo.js">alert("bar!");</script></div>';
-			var converted = convertHTML(html);
-			var script = converted.children[0];
-			should.exist(script);
-			script.tagName.should.eql('SCRIPT');
-			script.children.length.should.eql(1);
-			script.children[0].text.should.eql('alert("bar!");');
-		});
+	it('should handle doctype', function () {
+		input = '<!DOCTYPE html>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualText');
+		expect(output.text).to.equal('');
 	});
 
-	describe('when converting HTML containing a style tag', function () {
-		it('converts to a virtualdom node', function () {
-			var html = '<div><style>h1 {color:red;} p {color:blue;} </style></div>';
-			var converted = convertHTML(html);
-			var script = converted.children[0];
-			should.exist(script);
-			script.tagName.should.eql('STYLE');
-			script.children.length.should.eql(1);
-			script.children[0].text.should.eql('h1 {color:red;} p {color:blue;} ');
-		});
+	it('should handle html comment', function () {
+		input = '<!-- comment -->';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualText');
+		expect(output.text).to.equal('');
 	});
 
-	describe('when converting HTML containing CDATA', function () {
-		it('returns an empty string instead (cdata is unsupported)', function () {
-			var html = '<![CDATA[ Within this Character Data block I can\
-						use double dashes as much as I want (along with <, &, \', and ")\
-						*and* %MyParamEntity; will be expanded to the text\
-						"Has been expanded" ... however, I can\'t use\
-						the CEND sequence (if I need to use it I must escape one of the\
-						brackets or the greater-than sign).\
-						]]>';
-			var converted = convertHTML(html);
-			converted.text.should.eql('');
-		});
+	it('should handle empty input', function () {
+		input = '';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualText');
+		expect(output.text).to.equal('');
 	});
 
-	describe('when converting HTML containing a directive', function () {
-		it('returns an empty string instead (directives are unsupported)', function () {
-			var html = '<!DOCTYPE html>';
-			var converted = convertHTML(html);
-			converted.text.should.eql('');
-		});
-	});
+	it('should handle dom node input', function () {
+		input = document.getElementById('mocha');
+		output = parser(input);
 
-	describe('when converting HTML containing a comment', function () {
-		it('returns an empty string instead (comments are unsupported)', function () {
-			var html = '<div><!-- some comment --></div>';
-			var converted = convertHTML(html);
-			var comment = converted.children[0];
-			comment.text.should.eql('');
-		});
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.properties.id).to.equal('mocha');
 	});
-	*/
 });
