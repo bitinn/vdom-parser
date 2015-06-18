@@ -28,16 +28,24 @@ module.exports = parser;
 function parser(el) {
 	if (typeof el === 'string') {
 		var doc = domParser.parseFromString(el, 'text/html');
+
+		// null response, fallback to empty text node
+		if (!doc) {
+			el = document.createTextNode('');
+
 		// most tags default to body
-		if (doc.body.firstChild) {
+		} else if (doc.body.firstChild) {
 			el = doc.body.firstChild;
+
 		// some tags, like script and title, default to head
 		} else if (doc.head.firstChild) {
 			el = doc.head.firstChild;
+
 		// special case for html comment, cdata, doctype
 		} else if (doc.firstChild && doc.firstChild !== doc.documentElement) {
 			el = doc.firstChild;
-		// fallback to empty text node
+
+		// unknown element, fallback to empty text node
 		} else {
 			el = document.createTextNode('');
 		}
