@@ -6,11 +6,9 @@ browsers:
     version: latest
   - name: safari
     version: latest
-  - name: opera
-    version: latest
   - name: ie
-    version: 9..latest
+    version: 10..latest
   - name: iphone
     version: 7.0..latest
   - name: android
-    version: 4.0..latest
+    version: 4.3..latest
