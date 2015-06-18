@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mochify -R spec ./test/test.js",
+    "test-report": "mochify -R spec --plugin [ mochify-istanbul --exclude '**/test/**/*' --dir ./coverage --report lcov ] ./test/test.js",
     "test-coverage": "mochify -R spec --plugin [ mochify-istanbul --exclude '**/test/**/*' --dir ./coverage --report lcov ] ./test/test.js && cat ./coverage/lcov.info | coveralls",
     "test-lab": "DEBUG=zuul* zuul --ui mocha-bdd -- test/test.js",
     "test-local": "DEBUG=zuul* zuul --open --local 8080 --ui mocha-bdd -- test/test.js",
