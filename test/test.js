@@ -249,6 +249,12 @@ describe('vdom-parser', function () {
 		input = '<script>console.log("test")</script>';
 		output = parser(input);
 
+		// IE9 doesn't support innerHTML on head or html, so no polyfill
+		if (window.usingPolyfillOnIE9) {
+			expect(output.type).to.equal('VirtualText');
+			expect(output.tagName).to.equal('');
+		}
+
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('SCRIPT');
 
@@ -261,6 +267,12 @@ describe('vdom-parser', function () {
 	it('should parse style tag', function () {
 		input = '<style>h1 {color:red;}</style>';
 		output = parser(input);
+
+		// IE9 doesn't support innerHTML on head or html, so no polyfill
+		if (window.usingPolyfillOnIE9) {
+			expect(output.type).to.equal('VirtualText');
+			expect(output.tagName).to.equal('');
+		}
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('STYLE');
@@ -275,6 +287,12 @@ describe('vdom-parser', function () {
 		input = '<meta name="abc" content="test">';
 		output = parser(input);
 
+		// IE9 doesn't support innerHTML on head or html, so no polyfill
+		if (window.usingPolyfillOnIE9) {
+			expect(output.type).to.equal('VirtualText');
+			expect(output.tagName).to.equal('');
+		}
+
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('META');
 		expect(output.properties.name).to.equal('abc');
@@ -285,6 +303,12 @@ describe('vdom-parser', function () {
 		input = '<link rel="abc" href="//example.com">';
 		output = parser(input);
 
+		// IE9 doesn't support innerHTML on head or html, so no polyfill
+		if (window.usingPolyfillOnIE9) {
+			expect(output.type).to.equal('VirtualText');
+			expect(output.tagName).to.equal('');
+		}
+
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('LINK');
 		expect(output.properties.rel).to.equal('abc');
@@ -294,6 +318,12 @@ describe('vdom-parser', function () {
 	it('should parse title tag', function () {
 		input = '<title>test</title>';
 		output = parser(input);
+
+		// IE9 doesn't support innerHTML on head or html, so no polyfill
+		if (window.usingPolyfillOnIE9) {
+			expect(output.type).to.equal('VirtualText');
+			expect(output.tagName).to.equal('');
+		}
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('TITLE');
@@ -329,8 +359,14 @@ describe('vdom-parser', function () {
 		expect(useTag.type).to.equal('VirtualNode');
 		expect(useTag.tagName).to.equal('use');
 		expect(output.properties.class).to.equal('icon');
-		expect(useTag.properties['xlink:href'].value).to.equal('/icon.svg#name');
-		expect(useTag.properties['xlink:href'].namespace).to.equal('http://www.w3.org/1999/xlink');
+
+		// opera 12 supports for namespaced attribute is buggy, as in attr.name return href instead of xlink:href
+		if (useTag.properties.href) {
+			expect(useTag.properties.href).to.equal('/icon.svg#name');
+		} else {
+			expect(useTag.properties['xlink:href'].value).to.equal('/icon.svg#name');
+			expect(useTag.properties['xlink:href'].namespace).to.equal('http://www.w3.org/1999/xlink');
+		}
 	});
 
 	it('should handle doctype with fallback', function () {
