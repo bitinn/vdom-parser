@@ -31,8 +31,9 @@ Hence `vdom-parser`, a small module that bridges the gap between server-side and
 
 - If your input is DOM element, then all modern browsers are supported.
 - If your input is HTML string, then your browser need to [support HTML input on DOMParser API](http://caniuse.com/#search=DOMParser).
-- By using [DOMParser polyfill for older browsers](https://github.com/bitinn/vdom-parser/blob/master/test/html-domparser.js) you can make this work on older browsers and phantomjs, but see test cases comment on potential gotcha.
-- If your input is HTML string and you need to support IE9 (or less), all bets are off. Using polyfill we can get most nodes under `document.body` to work, but anything else will throw `Invalid target element for this operation`. Better to just [cut the mustard](http://responsivenews.co.uk/post/18948466399/cutting-the-mustard) and use server-side rendering.
+- By using [DOMParser polyfill for older browsers](https://github.com/bitinn/vdom-parser/blob/master/test/html-domparser.js) you can make this work on older browsers and phantomjs, but see test cases comment on potential gotcha. Always trim your string beforehand.
+- If your input is HTML string and you need to support IE9, be aware of its limit. Using polyfill we can get most nodes under `document.body` to work, but anything else will throw `Invalid target element for this operation`. Maybe better to just [cut the mustard](http://responsivenews.co.uk/post/18948466399/cutting-the-mustard) and use server-side rendering.
+- If you need to support Opera 12 be aware that their DOM attributes are not namespaced, it doesn't affect `virtual-dom` diffing or patching, but don't expect `properties['xlink:href']` to exists.
 
 
 # Install
