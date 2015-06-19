@@ -25,14 +25,33 @@
 		}
 	} catch (ex) {}
 
+	window.usingPolyfillOnIE9 = false;
 	DOMParser_proto.parseFromString = function(markup, type) {
 		if (/^\s*text\/html\s*(?:;|$)/i.test(type)) {
 			var doc = document.implementation.createHTMLDocument("");
-			// Note: make polyfill behave like native domparser when processing these tags
-			if (markup.indexOf('<!DOCTYPE') > -1) {
-				doc.documentElement.innerHTML = markup;
-			} else if (markup.indexOf('<title') > -1 || markup.indexOf('<script') > -1 || markup.indexOf('<style') > -1) {
-				doc.head.innerHTML = markup;
+
+			// Note: IE 9 doesn't support writing innerHTML on this node
+			try {
+				doc.head.innerHTML = '';
+			} catch (ex) {
+				// Note: exposing this only for testing purpose
+				window.usingPolyfillOnIE9 = true;
+			}
+
+			// Note: make this polyfill behave closer to native domparser
+			if (markup.indexOf('<!') > -1) {
+				try {
+					doc.documentElement.innerHTML = markup;
+				} catch (ex) {}
+			} else if (markup.indexOf('<title') > -1
+				|| markup.indexOf('<meta') > -1
+				|| markup.indexOf('<link') > -1
+				|| markup.indexOf('<script') > -1
+				|| markup.indexOf('<style') > -1)
+			{
+				try {
+					doc.head.innerHTML = markup;
+				} catch (ex) {}
 			} else {
 				doc.body.innerHTML = markup;
 			}
@@ -42,6 +61,6 @@
 		}
 	};
 
-	// Note: we expose a global flag here for easier testing, you don't need it
+	// Note: exposing this only for testing purpose
 	window.usingDomParserPolyfill = true;
 }(DOMParser));

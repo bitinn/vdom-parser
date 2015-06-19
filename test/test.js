@@ -249,6 +249,13 @@ describe('vdom-parser', function () {
 		input = '<script>console.log("test")</script>';
 		output = parser(input);
 
+		// IE9 doesn't support innerHTML on head or html, so no polyfill
+		if (window.usingPolyfillOnIE9) {
+			expect(output.type).to.equal('VirtualText');
+			expect(output.text).to.equal('');
+			return;
+		}
+
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('SCRIPT');
 
@@ -262,6 +269,13 @@ describe('vdom-parser', function () {
 		input = '<style>h1 {color:red;}</style>';
 		output = parser(input);
 
+		// IE9 doesn't support innerHTML on head or html, so no polyfill
+		if (window.usingPolyfillOnIE9) {
+			expect(output.type).to.equal('VirtualText');
+			expect(output.text).to.equal('');
+			return;
+		}
+
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('STYLE');
 
@@ -269,6 +283,60 @@ describe('vdom-parser', function () {
 		expect(children).to.have.length(1);
 		expect(children[0].type).to.equal('VirtualText');
 		expect(children[0].text).to.equal('h1 {color:red;}');
+	});
+
+	it('should parse meta tag', function () {
+		input = '<meta name="abc" content="test">';
+		output = parser(input);
+
+		// IE9 doesn't support innerHTML on head or html, so no polyfill
+		if (window.usingPolyfillOnIE9) {
+			expect(output.type).to.equal('VirtualText');
+			expect(output.text).to.equal('');
+			return;
+		}
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('META');
+		expect(output.properties.name).to.equal('abc');
+		expect(output.properties.content).to.equal('test');
+	});
+
+	it('should parse link tag', function () {
+		input = '<link rel="abc" href="//example.com">';
+		output = parser(input);
+
+		// IE9 doesn't support innerHTML on head or html, so no polyfill
+		if (window.usingPolyfillOnIE9) {
+			expect(output.type).to.equal('VirtualText');
+			expect(output.text).to.equal('');
+			return;
+		}
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('LINK');
+		expect(output.properties.rel).to.equal('abc');
+		expect(output.properties.href).to.equal('//example.com');
+	});
+
+	it('should parse title tag', function () {
+		input = '<title>test</title>';
+		output = parser(input);
+
+		// IE9 doesn't support innerHTML on head or html, so no polyfill
+		if (window.usingPolyfillOnIE9) {
+			expect(output.type).to.equal('VirtualText');
+			expect(output.text).to.equal('');
+			return;
+		}
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('TITLE');
+
+		var children = output.children;
+		expect(children).to.have.length(1);
+		expect(children[0].type).to.equal('VirtualText');
+		expect(children[0].text).to.equal('test');
 	});
 
 	it('should parse svg tag', function () {
@@ -296,8 +364,23 @@ describe('vdom-parser', function () {
 		expect(useTag.type).to.equal('VirtualNode');
 		expect(useTag.tagName).to.equal('use');
 		expect(output.properties.class).to.equal('icon');
-		expect(useTag.properties['xlink:href'].value).to.equal('/icon.svg#name');
-		expect(useTag.properties['xlink:href'].namespace).to.equal('http://www.w3.org/1999/xlink');
+
+		// Opera 12 supports for namespaced attribute is buggy
+		// Attr.name return href instead of xlink:href
+		if (useTag.properties.href) {
+			expect(useTag.properties.href).to.equal('/icon.svg#name');
+		} else {
+			expect(useTag.properties['xlink:href'].value).to.equal('/icon.svg#name');
+			expect(useTag.properties['xlink:href'].namespace).to.equal('http://www.w3.org/1999/xlink');
+		}
+	});
+
+	it('should handle doctype with fallback', function () {
+		input = '<!DOCTYPE html>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualText');
+		expect(output.text).to.equal('');
 	});
 
 	it('should handle cdata with fallback', function () {
@@ -308,17 +391,32 @@ describe('vdom-parser', function () {
 		expect(output.text).to.equal('');
 	});
 
-	it('should handle doctype with fallback', function () {
-		input = '<!DOCTYPE html>';
-
+	it('should handle html comment with fallback', function () {
+		input = '<!-- comment -->';
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualText');
 		expect(output.text).to.equal('');
 	});
 
-	it('should handle html comment with fallback', function () {
-		input = '<!-- comment -->';
+	it('should handle html tag with fallback', function () {
+		input = '<html></html>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualText');
+		expect(output.text).to.equal('');
+	});
+
+	it('should handle body tag with fallback', function () {
+		input = '<body></body>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualText');
+		expect(output.text).to.equal('');
+	});
+
+	it('should handle head tag with fallback', function () {
+		input = '<head></head>';
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualText');
