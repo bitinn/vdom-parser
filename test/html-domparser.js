@@ -30,29 +30,28 @@
 		if (/^\s*text\/html\s*(?:;|$)/i.test(type)) {
 			var doc = document.implementation.createHTMLDocument("");
 
+			// Note: IE 9 doesn't support writing innerHTML on this node
+			try {
+				doc.head.innerHTML = '';
+			} catch (ex) {
+				// Note: exposing this only for testing purpose
+				window.usingPolyfillOnIE9 = true;
+			}
+
 			// Note: make this polyfill behave closer to native domparser
 			if (markup.indexOf('<!') > -1) {
-				// Note: IE 9 doesn't support writing innerHTML on this node
 				try {
 					doc.documentElement.innerHTML = markup;
-				} catch (ex) {
-					// Note: exposing this only for testing purpose
-					window.usingPolyfillOnIE9 = true;
-				}
+				} catch (ex) {}
 			} else if (markup.indexOf('<title') > -1
 				|| markup.indexOf('<meta') > -1
 				|| markup.indexOf('<link') > -1
 				|| markup.indexOf('<script') > -1
 				|| markup.indexOf('<style') > -1)
 			{
-				// Note: IE 9 doesn't support writing innerHTML on this node
 				try {
-					doc.documentElement.innerHTML = markup;
-				} catch (ex) {
-					// Note: exposing this only for testing purpose
-					window.usingPolyfillOnIE9 = true;
-				}
-			// Note: this part works on most modern browsers
+					doc.head.innerHTML = markup;
+				} catch (ex) {}
 			} else {
 				doc.body.innerHTML = markup;
 			}

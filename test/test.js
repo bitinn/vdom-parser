@@ -252,7 +252,8 @@ describe('vdom-parser', function () {
 		// IE9 doesn't support innerHTML on head or html, so no polyfill
 		if (window.usingPolyfillOnIE9) {
 			expect(output.type).to.equal('VirtualText');
-			expect(output.tagName).to.equal('');
+			expect(output.text).to.equal('');
+			return;
 		}
 
 		expect(output.type).to.equal('VirtualNode');
@@ -271,7 +272,8 @@ describe('vdom-parser', function () {
 		// IE9 doesn't support innerHTML on head or html, so no polyfill
 		if (window.usingPolyfillOnIE9) {
 			expect(output.type).to.equal('VirtualText');
-			expect(output.tagName).to.equal('');
+			expect(output.text).to.equal('');
+			return;
 		}
 
 		expect(output.type).to.equal('VirtualNode');
@@ -290,7 +292,8 @@ describe('vdom-parser', function () {
 		// IE9 doesn't support innerHTML on head or html, so no polyfill
 		if (window.usingPolyfillOnIE9) {
 			expect(output.type).to.equal('VirtualText');
-			expect(output.tagName).to.equal('');
+			expect(output.text).to.equal('');
+			return;
 		}
 
 		expect(output.type).to.equal('VirtualNode');
@@ -306,7 +309,8 @@ describe('vdom-parser', function () {
 		// IE9 doesn't support innerHTML on head or html, so no polyfill
 		if (window.usingPolyfillOnIE9) {
 			expect(output.type).to.equal('VirtualText');
-			expect(output.tagName).to.equal('');
+			expect(output.text).to.equal('');
+			return;
 		}
 
 		expect(output.type).to.equal('VirtualNode');
@@ -322,7 +326,8 @@ describe('vdom-parser', function () {
 		// IE9 doesn't support innerHTML on head or html, so no polyfill
 		if (window.usingPolyfillOnIE9) {
 			expect(output.type).to.equal('VirtualText');
-			expect(output.tagName).to.equal('');
+			expect(output.text).to.equal('');
+			return;
 		}
 
 		expect(output.type).to.equal('VirtualNode');
@@ -360,7 +365,8 @@ describe('vdom-parser', function () {
 		expect(useTag.tagName).to.equal('use');
 		expect(output.properties.class).to.equal('icon');
 
-		// opera 12 supports for namespaced attribute is buggy, as in attr.name return href instead of xlink:href
+		// Opera 12 supports for namespaced attribute is buggy
+		// Attr.name return href instead of xlink:href
 		if (useTag.properties.href) {
 			expect(useTag.properties.href).to.equal('/icon.svg#name');
 		} else {
