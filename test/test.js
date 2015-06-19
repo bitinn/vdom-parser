@@ -271,6 +271,39 @@ describe('vdom-parser', function () {
 		expect(children[0].text).to.equal('h1 {color:red;}');
 	});
 
+	it('should parse meta tag', function () {
+		input = '<meta name="abc" content="test">';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('META');
+		expect(output.properties.name).to.equal('abc');
+		expect(output.properties.content).to.equal('test');
+	});
+
+	it('should parse link tag', function () {
+		input = '<link rel="abc" href="//example.com">';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('LINK');
+		expect(output.properties.rel).to.equal('abc');
+		expect(output.properties.href).to.equal('//example.com');
+	});
+
+	it('should parse title tag', function () {
+		input = '<title>test</title>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('TITLE');
+
+		var children = output.children;
+		expect(children).to.have.length(1);
+		expect(children[0].type).to.equal('VirtualText');
+		expect(children[0].text).to.equal('test');
+	});
+
 	it('should parse svg tag', function () {
 		input = '<svg viewBox="0 0 10 10"></svg>';
 		output = parser(input);
@@ -300,6 +333,14 @@ describe('vdom-parser', function () {
 		expect(useTag.properties['xlink:href'].namespace).to.equal('http://www.w3.org/1999/xlink');
 	});
 
+	it('should handle doctype with fallback', function () {
+		input = '<!DOCTYPE html>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualText');
+		expect(output.text).to.equal('');
+	});
+
 	it('should handle cdata with fallback', function () {
 		input = '<![CDATA[ hey ]]>';
 		output = parser(input);
@@ -308,17 +349,32 @@ describe('vdom-parser', function () {
 		expect(output.text).to.equal('');
 	});
 
-	it('should handle doctype with fallback', function () {
-		input = '<!DOCTYPE html>';
-
+	it('should handle html comment with fallback', function () {
+		input = '<!-- comment -->';
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualText');
 		expect(output.text).to.equal('');
 	});
 
-	it('should handle html comment with fallback', function () {
-		input = '<!-- comment -->';
+	it('should handle html tag with fallback', function () {
+		input = '<html></html>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualText');
+		expect(output.text).to.equal('');
+	});
+
+	it('should handle body tag with fallback', function () {
+		input = '<body></body>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualText');
+		expect(output.text).to.equal('');
+	});
+
+	it('should handle head tag with fallback', function () {
+		input = '<head></head>';
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualText');

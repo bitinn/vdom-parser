@@ -37,15 +37,15 @@ function parser(el) {
 		if (doc.body.firstChild) {
 			el = doc.body.firstChild;
 
-		// some tags, like script and title, default to head
-		} else if (doc.head.firstChild) {
+		// some tags, like script and style, default to head
+		} else if (doc.head.firstChild && (doc.head.firstChild.tagName !== 'TITLE' || doc.title)) {
 			el = doc.head.firstChild;
 
 		// special case for html comment, cdata, doctype
-		} else if (doc.firstChild && doc.firstChild !== doc.documentElement) {
+		} else if (doc.firstChild && doc.firstChild.tagName !== 'HTML') {
 			el = doc.firstChild;
 
-		// unknown element, fallback to empty text node
+		// other element, such as whitespace, or html/body/head tag, fallback to empty text node
 		} else {
 			el = document.createTextNode('');
 		}

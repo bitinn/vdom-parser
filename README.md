@@ -23,9 +23,15 @@ Hence `vdom-parser`, a small module that bridges the gap between server-side and
 # Features
 
 - Use [DOMParser](https://developer.mozilla.org/en-US/docs/Web/API/DOMParser) for better performance and smaller filesize.
-- Optional [polyfill for older browsers](https://gist.github.com/eligrey/1129031).
 - No direct dependency, peer-dependent on `virtual-dom` major version (v2 currently).
-- Test cases covering common usage such as inline svg, style and script tags.
+- 100% test coverage, covering common usage such as inline svg, style and script tags (unfortunately `phantomjs` still lack HTML support on DOMParser, so our coverage is only 99%).
+
+
+# Browser support
+
+- If your input is DOM element, then all modern browsers are supported.
+- If your input is HTML string, then your browser need to [support HTML input on DOMParser API](http://caniuse.com/#search=DOMParser).
+- By using [DOMParser polyfill for older browsers](https://gist.github.com/eligrey/1129031) you can make this work on older browsers and phantomjs, but see test cases comment on potential gotcha.
 
 
 # Install
@@ -62,7 +68,7 @@ Returns a `VNode` or `VText`, see [virtual-dom documentation](https://github.com
 
 Should be a DOM Element or HTML String.
 
-Note: for string input, we only support nodes under `document.head` or `document.body`, not `<html>`, `<head>` or `<body>`.
+Note: for string input, `<html>`, `<body>`, `<head>` will return empty VText as we only support nodes under `document.body` or `document.head`. DOM element input doesn't have this limit.
 
 
 # License
