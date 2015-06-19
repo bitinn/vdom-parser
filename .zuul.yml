@@ -6,6 +6,8 @@ browsers:
     version: 35..latest
   - name: safari
     version: 7..latest
+  - name: opera
+    version: latest
   - name: ie
     version: 10..latest
   - name: iphone
