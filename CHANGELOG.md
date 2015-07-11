@@ -5,7 +5,11 @@ Changelog
 
 # 1.x release
 
-## v1.0.2 (master)
+## v1.0.3 (master)
+
+- Fix: default namespace should be `null`
+
+## v1.0.2
 
 - Enhance: coverage 100% (though not possible with phantomjs due to lack of html support in their DOMParser API)
 - Enhance: document to clarify browser support
