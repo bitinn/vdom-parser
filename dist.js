@@ -22,10 +22,11 @@ module.exports = parser;
 /**
  * DOM/html string to vdom parser
  *
- * @param   Mixed   el  DOM element or html string 
- * @return  Object      VNode or VText
+ * @param   Mixed   el    DOM element or html string
+ * @param   String  attr  Attribute name that contains vdom key
+ * @return  Object        VNode or VText
  */
-function parser(el) {
+function parser(el, attr) {
 	// empty input fallback to empty text node
 	if (!el) {
 		return createNode(document.createTextNode(''));
@@ -56,23 +57,24 @@ function parser(el) {
 		throw new Error('invalid dom node', el);
 	}
 
-	return createNode(el);
+	return createNode(el, attr);
 }
 
 /**
  * Create vdom from dom node
  *
- * @param   Object  el  DOM element
- * @return  Object      VNode or VText
+ * @param   Object  el    DOM element
+ * @param   String  attr  Attribute name that contains vdom key
+ * @return  Object        VNode or VText
  */
-function createNode(el) {
+function createNode(el, attr) {
 	// html comment is not currently supported by virtual-dom
 	if (el.nodeType === 3) {
 		return createVirtualTextNode(el);
 
 	// cdata or doctype is not currently supported by virtual-dom
 	} else if (el.nodeType === 1 || el.nodeType === 9) {
-		return createVirtualDomNode(el);
+		return createVirtualDomNode(el, attr);
 	}
 
 	// default to empty text node
@@ -92,17 +94,19 @@ function createVirtualTextNode(el) {
 /**
  * Create vnode from dom node
  *
- * @param   Object  el  DOM element
- * @return  Object      VNode
+ * @param   Object  el    DOM element
+ * @param   String  attr  Attribute name that contains vdom key
+ * @return  Object        VNode
  */
-function createVirtualDomNode(el) {
+function createVirtualDomNode(el, attr) {
 	var ns = el.namespaceURI !== HTML_NAMESPACE ? el.namespaceURI : null;
+	var key = attr && el.getAttribute(attr) ? el.getAttribute(attr) : null;
 
 	return new VNode(
 		el.tagName
 		, createProperties(el)
 		, createChildren(el)
-		, null
+		, key
 		, ns
 	);
 }

@@ -5,7 +5,11 @@ Changelog
 
 # 1.x release
 
-## v1.0.3 (master)
+## v1.1.0 (master)
+
+- Feature: allow optional attribute for key lookup
+
+## v1.0.3
 
 - Fix: default namespace should be `null`
 

@@ -22,8 +22,9 @@ Hence `vdom-parser`, a small module that bridges the gap between server-side and
 
 # Features
 
-- Use [DOMParser](https://developer.mozilla.org/en-US/docs/Web/API/DOMParser) for better performance and smaller filesize.
+- Use [DOMParser](https://developer.mozilla.org/en-US/docs/Web/API/DOMParser) for better performance and smaller filesize (around 10KB when minified).
 - No direct dependency, peer-dependent on `virtual-dom` major version (v2 currently).
+- Key support to minimize re-rendering.
 - 100% test coverage, covering common usage such as inline svg, style and script tags (unfortunately `phantomjs` still lack HTML support on DOMParser, so our coverage is only 99%).
 
 
@@ -62,7 +63,7 @@ See [test cases](https://github.com/bitinn/vdom-parser/blob/master/test/test.js)
 
 # API
 
-## parser(node)
+## parser(node, key)
 
 Returns a `VNode` or `VText`, see [virtual-dom documentation](https://github.com/Matt-Esch/virtual-dom/tree/master/docs).
 
@@ -71,6 +72,10 @@ Returns a `VNode` or `VText`, see [virtual-dom documentation](https://github.com
 Should be a DOM Element or HTML String.
 
 Note: for string input, `<html>`, `<body>`, `<head>` will return empty VText as we only support nodes under `document.body` or `document.head`. DOM element input doesn't have this limit.
+
+### key
+
+Optional attribute for [VNode key](https://github.com/Matt-Esch/virtual-dom/blob/master/docs/vnode.md) lookup, exposing VNode key as html attribute to minimize client-side patching.
 
 
 # License
