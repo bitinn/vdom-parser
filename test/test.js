@@ -30,7 +30,7 @@ describe('vdom-parser', function () {
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
-		expect(output.namespace).to.equal('http://www.w3.org/1999/xhtml');
+		expect(output.namespace).to.be.null;
 
 		var children = output.children;
 		expect(children).to.have.length(1);

@@ -95,12 +95,14 @@ function createVirtualTextNode(el) {
  * @return  Object      VNode
  */
 function createVirtualDomNode(el) {
+	var ns = el.namespaceURI !== HTML_NAMESPACE ? el.namespaceURI : null;
+
 	return new VNode(
 		el.tagName
 		, createProperties(el)
 		, createChildren(el)
 		, null
-		, el.namespaceURI
+		, ns
 	);
 }
 
