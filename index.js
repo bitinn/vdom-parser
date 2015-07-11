@@ -104,7 +104,7 @@ function createVirtualDomNode(el, attr) {
 	return new VNode(
 		el.tagName
 		, createProperties(el)
-		, createChildren(el)
+		, createChildren(el, attr)
 		, key
 		, ns
 	);
@@ -113,13 +113,14 @@ function createVirtualDomNode(el, attr) {
 /**
  * Recursively create vdom
  *
- * @param   Object  el  Parent element
- * @return  Array       Child vnode or vtext
+ * @param   Object  el    Parent element
+ * @param   String  attr  Attribute name that contains vdom key
+ * @return  Array         Child vnode or vtext
  */
-function createChildren(el) {
+function createChildren(el, attr) {
 	var children = [];
 	for (var i = 0; i < el.childNodes.length; i++) {
-		children.push(createNode(el.childNodes[i]));
+		children.push(createNode(el.childNodes[i], attr));
 	};
 
 	return children;

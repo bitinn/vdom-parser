@@ -515,4 +515,19 @@ describe('vdom-parser', function () {
 		expect(output.properties.id).to.be.undefined;
 		expect(output.properties.attributes['data-id']).to.equal('example');
 	});
+
+	it('should support optional key lookup, recursively', function () {
+		input = '<div id="abc"><p id="edf">test</p></div>';
+		output = parser(input, 'id');
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.key).to.equal('abc');
+
+		var children = output.children;
+		expect(children).to.have.length(1);
+		expect(children[0].type).to.equal('VirtualNode');
+		expect(children[0].tagName).to.equal('P');
+		expect(children[0].key).to.equal('edf');
+	});
 });
