@@ -30,6 +30,7 @@ describe('vdom-parser', function () {
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
+		expect(output.key).to.be.undefined;
 		expect(output.namespace).to.be.null;
 
 		var children = output.children;
@@ -491,5 +492,42 @@ describe('vdom-parser', function () {
 		expect(function() {
 			output = parser(input);
 		}).to.throw(Error);
+	});
+
+	it('should support optional key lookup', function () {
+		input = '<div id="example">test</div>';
+		output = parser(input, 'id');
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.key).to.equal('example');
+		expect(output.namespace).to.be.null;
+		expect(output.properties.id).to.equal('example');
+	});
+
+	it('should support optional key lookup, using data attribute', function () {
+		input = '<div data-id="example">test</div>';
+		output = parser(input, 'data-id');
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.key).to.equal('example');
+		expect(output.properties.id).to.be.undefined;
+		expect(output.properties.attributes['data-id']).to.equal('example');
+	});
+
+	it('should support optional key lookup, recursively', function () {
+		input = '<div id="abc"><p id="edf">test</p></div>';
+		output = parser(input, 'id');
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.key).to.equal('abc');
+
+		var children = output.children;
+		expect(children).to.have.length(1);
+		expect(children[0].type).to.equal('VirtualNode');
+		expect(children[0].tagName).to.equal('P');
+		expect(children[0].key).to.equal('edf');
 	});
 });
