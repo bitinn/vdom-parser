@@ -5,7 +5,11 @@ Changelog
 
 # 1.x release
 
-## v1.1.0 (master)
+## v1.2.0 (master)
+
+- Enhance: skip whitespace between child nodes to minimize vdom and reduce unnecessary patching
+
+## v1.1.0
 
 - Feature: allow optional attribute for key lookup
 
