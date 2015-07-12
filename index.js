@@ -120,11 +120,6 @@ function createVirtualDomNode(el, attr) {
 function createChildren(el, attr) {
 	var children = [];
 	for (var i = 0; i < el.childNodes.length; i++) {
-		// ignore whitespace text node between elements, this reduces vdom size and unnecessary patches
-		if (el.childNodes[i].nodeType === 3 && el.childNodes[i].nodeValue.trim() === '') {
-			continue;
-		}
-
 		children.push(createNode(el.childNodes[i], attr));
 	};
 

@@ -5,7 +5,11 @@ Changelog
 
 # 1.x release
 
-## v1.2.0 (master)
+## v1.2.1 (master)
+
+- Fix: optimization introduced in v1.2.0 cause dom patching issues, removed it for now
+
+## v1.2.0
 
 - Enhance: skip whitespace between child nodes to minimize vdom and reduce unnecessary patching
 

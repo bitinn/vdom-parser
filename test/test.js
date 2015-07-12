@@ -530,19 +530,4 @@ describe('vdom-parser', function () {
 		expect(children[0].tagName).to.equal('P');
 		expect(children[0].key).to.equal('edf');
 	});
-
-	it('should skip whitespace textnode between elements', function () {
-		input = '<div> <p>a</p> <p>b</p>\t<p>c</p>\n<p>d</p>\r</div>';
-		output = parser(input);
-
-		expect(output.type).to.equal('VirtualNode');
-		expect(output.tagName).to.equal('DIV');
-
-		var children = output.children;
-		expect(children).to.have.length(4);
-		expect(children[0].type).to.equal('VirtualNode');
-		expect(children[1].type).to.equal('VirtualNode');
-		expect(children[2].type).to.equal('VirtualNode');
-		expect(children[3].type).to.equal('VirtualNode');
-	});
 });
