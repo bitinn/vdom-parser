@@ -1,6 +1,6 @@
 {
   "name": "vdom-parser",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A client-side DOM to vdom parser based on DOMParser API, compatible with virtual-dom",
   "main": "index.js",
   "scripts": {
