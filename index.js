@@ -36,7 +36,7 @@ function parser(el, attr) {
 
 		// most tags default to body
 		if (doc.body.firstChild) {
-			el = doc.body.firstChild;
+			el = doc.getElementsByTagName('body')[0].firstChild;
 
 		// some tags, like script and style, default to head
 		} else if (doc.head.firstChild && (doc.head.firstChild.tagName !== 'TITLE' || doc.title)) {
@@ -146,7 +146,17 @@ function createProperties(el) {
 
 	var attr;
 	for (var i = 0; i < el.attributes.length; i++) {
-		if (ns) {
+		// Use built in CSS style parsing
+		if(el.attributes[i].name == 'style'){
+			var style = el.style;
+			var output = {};
+			for (var i = 0; i < style.length; ++i) {
+				var item = style.item(i);
+				output[item] = style[item];
+			}
+			attr = {name: 'style', value: output};
+		}
+		else if (ns) {
 			attr = createPropertyNS(el.attributes[i]);
 		} else {
 			attr = createProperty(el.attributes[i]);
@@ -191,20 +201,8 @@ function createProperty(attr) {
 	} else {
 		name = attr.name;
 	}
-
-	// special cases for style attribute, we default to properties.style
-	if (name === 'style') {
-		var style = {};
-		attr.value.split(';').forEach(function (s) {
-			var pos = s.indexOf(':');
-			if (pos < 0) {
-				return;
-			}
-			style[s.substr(0, pos).trim()] = s.substr(pos + 1).trim();
-		});
-		value = style;
 	// special cases for data attribute, we default to properties.attributes.data
-	} else if (name.indexOf('data-') === 0) {
+	if (name.indexOf('data-') === 0) {
 		value = attr.value;
 		isAttr = true;
 	} else {
