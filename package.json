@@ -28,6 +28,7 @@
     "url": "https://github.com/bitinn/vdom-parser/issues"
   },
   "homepage": "https://github.com/bitinn/vdom-parser#readme",
+  "dependencies": {},
   "peerDependencies": {
     "virtual-dom": "2.x"
   },
