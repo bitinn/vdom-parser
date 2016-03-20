@@ -9,8 +9,9 @@ Changelog
 
 - Fix: changed to native css parser for inline styles (thx @AkeemMcLennon)
 - Fix: do not require DOMParser to be present so that older browser won't choke. (thx @niksy)
-- Fix: package json dependency to workaround npm bug (thx @voronianski)
-- Fix: update browser testing
+- Fix: package dependency to workaround npm bug (thx @voronianski)
+- Fix: inconsistent inline css parsing of `url()` across modern browsers
+- Fix: update device testing list, limit our scope to modern browsers
 
 ## v1.2.1
 

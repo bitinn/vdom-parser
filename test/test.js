@@ -185,25 +185,24 @@ describe('vdom-parser', function () {
 
 	it('should parse bracket style attribute on node', function () {
 		var url = 'url(test.jpg)';
-		input = '<div style="color: red; width: 100px; background: ' + url + '">test</div>';
+		input = '<div style="color: red; width: 100px; background-image: ' + url + '">test</div>';
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
 		expect(output.properties.style.color).to.equal('red');
 		expect(output.properties.style.width).to.equal('100px');
-		expect(output.properties.style['background-image']).to.equal(url);
+		expect(output.properties.style['background-image'] || output.properties.style.backgroundImage).to.equal(url);
 	});
 
 	it('should parse base64 encoded styles on node', function () {
 		var url = 'url(data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7)';
-		input = '<div style="background: ' + url + '">test</div>';
+		input = '<div style="background-image: ' + url + '">test</div>';
 		output = parser(input);
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
-		expect(output.properties.style['background-image']).to.equal(url);
+		expect(output.properties.style['background-image'] || output.properties.style.backgroundImage).to.equal(url);
 	});
-
 
 	it('should parse data attribute on node', function () {
 		input = '<div data-my-attr="abc">test</div>';
