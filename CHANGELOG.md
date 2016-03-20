@@ -5,7 +5,14 @@ Changelog
 
 # 1.x release
 
-## v1.2.1 (master)
+## v1.3.0 (master)
+
+- Fix: changed to native css parser for inline styles (thx @AkeemMcLennon)
+- Fix: do not require DOMParser to be present so that older browser won't choke. (thx @niksy)
+- Fix: package json dependency to workaround npm bug (thx @voronianski)
+- Fix: update browser testing
+
+## v1.2.1
 
 - Fix: optimization introduced in v1.2.0 cause dom patching issues, removed it for now
 
