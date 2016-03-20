@@ -184,7 +184,9 @@ describe('vdom-parser', function () {
 	});
 
 	it('should parse bracket style attribute on node', function () {
-		input = '<div style="color: red; width: 100px; background-image: url(test.jpg)">test</div>';
+		var url = 'url(test.jpg)';
+		var browser = 'url(\"test.jpg\")';
+		input = '<div style="color: red; width: 100px; background-image: ' + url + '">test</div>';
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualNode');
@@ -192,19 +194,20 @@ describe('vdom-parser', function () {
 		expect(output.properties.style).to.eql({
 			color: 'red'
 			, width: '100px'
-			, 'background-image': 'url(test.jpg)'
+			, 'background-image': window.usingDomParserPolyfill ? url : browser
 		});
 	});
 
 	it('should parse base64 encoded styles on node', function () {
 		var background = 'url(data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7)';
+		var browser = 'url(\"data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7\")'
 		input = '<div style="background-image: ' + background + '">test</div>';
 		output = parser(input);
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
-		expect(output.properties.style).to.eql({
-			'background-image': background
-		});
+		expect(output.properties.style['background-image']).to.equal(
+			window.usingDomParserPolyfill ? background : browser
+		);
 	});
 
 
