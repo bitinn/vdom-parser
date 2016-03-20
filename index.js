@@ -9,7 +9,7 @@
 
 var VNode = require('virtual-dom/vnode/vnode');
 var VText = require('virtual-dom/vnode/vtext');
-var domParser = new DOMParser();
+var domParser;
 
 var propertyMap = require('./property-map');
 var namespaceMap = require('./namespace-map');
@@ -32,6 +32,10 @@ function parser(el, attr) {
 	}
 
 	if (typeof el === 'string') {
+		if ( !('DOMParser' in window) ) {
+			throw new Error('DOMParser is not available, so parsing string to DOM node is not possible.');
+		}
+		domParser = domParser || new DOMParser();
 		var doc = domParser.parseFromString(el, 'text/html');
 
 		// most tags default to body
