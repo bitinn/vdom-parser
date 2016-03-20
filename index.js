@@ -150,13 +150,17 @@ function createProperties(el) {
 
 	var attr;
 	for (var i = 0; i < el.attributes.length; i++) {
-		// Use built in CSS style parsing
+		// use built in css style parsing
 		if(el.attributes[i].name == 'style'){
 			var style = el.style;
 			var output = {};
 			for (var i = 0; i < style.length; ++i) {
 				var item = style.item(i);
 				output[item] = style[item];
+				// hack to workaround browser inconsistency with url()
+				if (output[item].indexOf('url') > -1) {
+					output[item] = output[item].replace(/\"/g, '')
+				}
 			}
 			attr = {name: 'style', value: output};
 		}

@@ -185,29 +185,23 @@ describe('vdom-parser', function () {
 
 	it('should parse bracket style attribute on node', function () {
 		var url = 'url(test.jpg)';
-		var browser = 'url(\"test.jpg\")';
-		input = '<div style="color: red; width: 100px; background-image: ' + url + '">test</div>';
+		input = '<div style="color: red; width: 100px; background: ' + url + '">test</div>';
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
-		expect(output.properties.style).to.eql({
-			color: 'red'
-			, width: '100px'
-			, 'background-image': window.usingDomParserPolyfill ? url : browser
-		});
+		expect(output.properties.style.color).to.equal('red');
+		expect(output.properties.style.width).to.equal('100px');
+		expect(output.properties.style['background-image']).to.equal(url);
 	});
 
 	it('should parse base64 encoded styles on node', function () {
-		var background = 'url(data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7)';
-		var browser = 'url(\"data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7\")'
-		input = '<div style="background-image: ' + background + '">test</div>';
+		var url = 'url(data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7)';
+		input = '<div style="background: ' + url + '">test</div>';
 		output = parser(input);
 		expect(output.type).to.equal('VirtualNode');
 		expect(output.tagName).to.equal('DIV');
-		expect(output.properties.style['background-image']).to.equal(
-			window.usingDomParserPolyfill ? background : browser
-		);
+		expect(output.properties.style['background-image']).to.equal(url);
 	});
 
 
