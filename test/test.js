@@ -184,7 +184,7 @@ describe('vdom-parser', function () {
 	});
 
 	it('should parse bracket style attribute on node', function () {
-		var url = 'url(test.jpg)';
+		var url = 'url(http://example.com/test.jpg)';
 		input = '<div style="color: red; width: 100px; background: ' + url + '">test</div>';
 		output = parser(input);
 
