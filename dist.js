@@ -10,7 +10,7 @@
 
 var VNode = require('virtual-dom/vnode/vnode');
 var VText = require('virtual-dom/vnode/vtext');
-var domParser = new DOMParser();
+var domParser;
 
 var propertyMap = require('./property-map');
 var namespaceMap = require('./namespace-map');
@@ -33,6 +33,10 @@ function parser(el, attr) {
 	}
 
 	if (typeof el === 'string') {
+		if ( !('DOMParser' in window) ) {
+			throw new Error('DOMParser is not available, so parsing string to DOM node is not possible.');
+		}
+		domParser = domParser || new DOMParser();
 		var doc = domParser.parseFromString(el, 'text/html');
 
 		// most tags default to body
@@ -147,13 +151,17 @@ function createProperties(el) {
 
 	var attr;
 	for (var i = 0; i < el.attributes.length; i++) {
-		// Use built in CSS style parsing
+		// use built in css style parsing
 		if(el.attributes[i].name == 'style'){
 			var style = el.style;
 			var output = {};
 			for (var i = 0; i < style.length; ++i) {
 				var item = style.item(i);
 				output[item] = style[item];
+				// hack to workaround browser inconsistency with url()
+				if (output[item].indexOf('url') > -1) {
+					output[item] = output[item].replace(/\"/g, '')
+				}
 			}
 			attr = {name: 'style', value: output};
 		}

@@ -25,7 +25,7 @@ Hence `vdom-parser`, a small module that bridges the gap between server-side and
 - Use [DOMParser](https://developer.mozilla.org/en-US/docs/Web/API/DOMParser) for better performance and smaller filesize (around 10KB when minified).
 - No direct dependency, peer-dependent on `virtual-dom` major version (v2 currently).
 - VNode key support to minimize re-rendering.
-- 100% test coverage, covering common usage such as inline svg, style and script tags (unfortunately `phantomjs` still lack HTML support on DOMParser, so our coverage is only 99%).
+- 100% test coverage, covering common usage such as inline svg, style and script tags (unfortunately `phantomjs` still lacks HTML support in DOMParser, so our travis coverage remains incomplete).
 
 
 # Browser support
