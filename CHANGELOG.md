@@ -5,6 +5,11 @@ Changelog
 
 # 1.x release
 
+## v1.3.1 (master)
+
+- Fix: style property parsing due to incorrect variable reuse
+- Fix: travis and saucelab integration
+
 ## v1.3.0 (master)
 
 - Fix: changed to native css parser for inline styles (thx @AkeemMcLennon)
