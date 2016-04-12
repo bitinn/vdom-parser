@@ -152,17 +152,7 @@ function createProperties(el) {
 	for (var i = 0; i < el.attributes.length; i++) {
 		// use built in css style parsing
 		if(el.attributes[i].name == 'style'){
-			var style = el.style;
-			var output = {};
-			for (var i = 0; i < style.length; ++i) {
-				var item = style.item(i);
-				output[item] = style[item];
-				// hack to workaround browser inconsistency with url()
-				if (output[item].indexOf('url') > -1) {
-					output[item] = output[item].replace(/\"/g, '')
-				}
-			}
-			attr = {name: 'style', value: output};
+			attr = createStyleProperty(el);
 		}
 		else if (ns) {
 			attr = createPropertyNS(el.attributes[i]);
@@ -238,4 +228,24 @@ function createPropertyNS(attr) {
 		, value: attr.value
 		, ns: namespaceMap[attr.name] || ''
 	};
+}
+
+/**
+ * Create style property from dom node
+ *
+ * @param   Object  el  DOM node
+ * @return  Object        Normalized attribute
+ */
+function createStyleProperty(el) {
+	var style = el.style;
+	var output = {};
+	for (var i = 0; i < style.length; ++i) {
+		var item = style.item(i);
+		output[item] = style[item];
+		// hack to workaround browser inconsistency with url()
+		if (output[item].indexOf('url') > -1) {
+			output[item] = output[item].replace(/\"/g, '')
+		}
+	}
+	return { name: 'style', value: output };
 }

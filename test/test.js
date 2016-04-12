@@ -161,7 +161,7 @@ describe('vdom-parser', function () {
 	});
 
 	it('should parse style attribute on node', function () {
-		input = '<div style="color: red;">test</div>';
+		input = '<div style="color: red;" id="abc">test</div>';
 		output = parser(input);
 
 		expect(output.type).to.equal('VirtualNode');
@@ -169,6 +169,7 @@ describe('vdom-parser', function () {
 		expect(output.properties.style).to.eql({
 			color: 'red'
 		});
+		expect(output.properties.id).to.equal('abc');
 	});
 
 	it('should parse complex style attribute on node', function () {
