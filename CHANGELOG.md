@@ -10,7 +10,7 @@ Changelog
 - Fix: style property parsing due to incorrect variable reuse
 - Fix: travis and saucelab integration
 
-## v1.3.0 (master)
+## v1.3.0
 
 - Fix: changed to native css parser for inline styles (thx @AkeemMcLennon)
 - Fix: do not require DOMParser to be present so that older browser won't choke. (thx @niksy)
