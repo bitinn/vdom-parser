@@ -56,7 +56,7 @@ function parser(el, attr) {
 		}
 	}
 
-	if (typeof el !== 'object' || !el || !el.nodeType) { 
+	if (typeof el !== 'object' || !el || !el.nodeType) {
 		throw new Error('invalid dom node', el);
 	}
 
@@ -185,7 +185,7 @@ function createProperties(el) {
 }
 
 /**
- * Create property from dom attribute 
+ * Create property from dom attribute
  *
  * @param   Object  attr  DOM attribute
  * @return  Object        Normalized attribute
@@ -200,7 +200,7 @@ function createProperty(attr) {
 		name = attr.name;
 	}
 	// special cases for data attribute, we default to properties.attributes.data
-	if (name.indexOf('data-') === 0) {
+	if (name.indexOf('data-') === 0 || name.indexOf('aria-') === 0) {
 		value = attr.value;
 		isAttr = true;
 	} else {
@@ -215,7 +215,7 @@ function createProperty(attr) {
 }
 
 /**
- * Create namespaced property from dom attribute 
+ * Create namespaced property from dom attribute
  *
  * @param   Object  attr  DOM attribute
  * @return  Object        Normalized attribute

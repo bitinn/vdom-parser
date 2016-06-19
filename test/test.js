@@ -224,6 +224,15 @@ describe('vdom-parser', function () {
 		expect(output.properties.attributes['data-src-title']).to.equal('abc');
 	});
 
+	it('should parse aria attribute on node', function () {
+		input = '<div aria-hidden="true">test</div>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.properties.attributes['aria-hidden']).to.equal('true');
+	});
+
 	it('should parse for attribute on label', function () {
 		input = '<label for="abc"></label>';
 		output = parser(input);
