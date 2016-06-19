@@ -57,7 +57,7 @@ function parser(el, attr) {
 		}
 	}
 
-	if (typeof el !== 'object' || !el || !el.nodeType) { 
+	if (typeof el !== 'object' || !el || !el.nodeType) {
 		throw new Error('invalid dom node', el);
 	}
 
@@ -153,17 +153,7 @@ function createProperties(el) {
 	for (var i = 0; i < el.attributes.length; i++) {
 		// use built in css style parsing
 		if(el.attributes[i].name == 'style'){
-			var style = el.style;
-			var output = {};
-			for (var i = 0; i < style.length; ++i) {
-				var item = style.item(i);
-				output[item] = style[item];
-				// hack to workaround browser inconsistency with url()
-				if (output[item].indexOf('url') > -1) {
-					output[item] = output[item].replace(/\"/g, '')
-				}
-			}
-			attr = {name: 'style', value: output};
+			attr = createStyleProperty(el);
 		}
 		else if (ns) {
 			attr = createPropertyNS(el.attributes[i]);
@@ -196,7 +186,7 @@ function createProperties(el) {
 }
 
 /**
- * Create property from dom attribute 
+ * Create property from dom attribute
  *
  * @param   Object  attr  DOM attribute
  * @return  Object        Normalized attribute
@@ -211,7 +201,7 @@ function createProperty(attr) {
 		name = attr.name;
 	}
 	// special cases for data attribute, we default to properties.attributes.data
-	if (name.indexOf('data-') === 0) {
+	if (name.indexOf('data-') === 0 || name.indexOf('aria-') === 0) {
 		value = attr.value;
 		isAttr = true;
 	} else {
@@ -226,7 +216,7 @@ function createProperty(attr) {
 }
 
 /**
- * Create namespaced property from dom attribute 
+ * Create namespaced property from dom attribute
  *
  * @param   Object  attr  DOM attribute
  * @return  Object        Normalized attribute
@@ -239,6 +229,26 @@ function createPropertyNS(attr) {
 		, value: attr.value
 		, ns: namespaceMap[attr.name] || ''
 	};
+}
+
+/**
+ * Create style property from dom node
+ *
+ * @param   Object  el  DOM node
+ * @return  Object        Normalized attribute
+ */
+function createStyleProperty(el) {
+	var style = el.style;
+	var output = {};
+	for (var i = 0; i < style.length; ++i) {
+		var item = style.item(i);
+		output[item] = style[item];
+		// hack to workaround browser inconsistency with url()
+		if (output[item].indexOf('url') > -1) {
+			output[item] = output[item].replace(/\"/g, '')
+		}
+	}
+	return { name: 'style', value: output };
 }
 
 },{"./namespace-map":2,"./property-map":10,"virtual-dom/vnode/vnode":8,"virtual-dom/vnode/vtext":9}],2:[function(require,module,exports){
