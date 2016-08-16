@@ -8,9 +8,6 @@ A client-side DOM to vdom parser based on DOMParser API, compatible with [virtua
 [![build status][travis-image]][travis-url]
 [![coverage status][coveralls-image]][coveralls-url]
 
-[![browser test report][sauce-labs-image]][sauce-labs-url]
-
-
 # Motivation
 
 We use `virtual-dom` with progressive enhancement in mind: we use server-side rendering to achieve good first-page performance then re-attach vdom rendering client-side.
