@@ -5,7 +5,17 @@ Changelog
 
 # 1.x release
 
-## v1.3.1 (master)
+## v1.3.4 (master)
+
+- Fix: remove broken saucelabs integration
+
+## v1.3.3 (skipped)
+
+## v1.3.2
+
+- Fix: handling aria attributes
+
+## v1.3.1
 
 - Fix: style property parsing due to incorrect variable reuse
 - Fix: travis and saucelab integration
