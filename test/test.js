@@ -196,6 +196,17 @@ describe('vdom-parser', function () {
 		expect(output.properties.style['background-image']).to.equal(url);
 	});
 
+	it('should always parse numeric style properties as string', function () {
+		input = '<div style="z-index:42">test</div>';
+		output = parser(input);
+
+		expect(output.type).to.equal('VirtualNode');
+		expect(output.tagName).to.equal('DIV');
+		expect(output.properties.style).to.eql({
+			'z-index': '42'
+		});
+	});
+
 	it('should parse base64 encoded styles on node', function () {
 		var url = 'url(data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7)';
 		input = '<div style="background: ' + url + '">test</div>';
