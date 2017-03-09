@@ -5,7 +5,11 @@ Changelog
 
 # 1.x release
 
-## v1.3.4 (master)
+## v1.3.5 (master)
+
+- Fix: numeric value in style property is not casted to string properly (thx @AaronHirsch)
+
+## v1.3.4
 
 - Fix: remove broken saucelabs integration
 
