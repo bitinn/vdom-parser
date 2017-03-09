@@ -241,7 +241,7 @@ function createStyleProperty(el) {
 	var output = {};
 	for (var i = 0; i < style.length; ++i) {
 		var item = style.item(i);
-		output[item] = style[item];
+		output[item] = String(style[item]);
 		// hack to workaround browser inconsistency with url()
 		if (output[item].indexOf('url') > -1) {
 			output[item] = output[item].replace(/\"/g, '')
