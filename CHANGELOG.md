@@ -5,10 +5,12 @@ Changelog
 
 # 1.x release
 
-## v1.4.0
+## v1.4.1
 
+- Enhance: make sure saucelabs integration run properly by removing android tests, this is due to saucelabs appium limit
 - Fix: numeric value in style property is not casted to string properly (thx @AaronHirsch)
-- Fix: saucelabs integration by removing android tests
+
+## v1.4.0 (skipped)
 
 ## v1.3.4
 
