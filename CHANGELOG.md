@@ -5,7 +5,7 @@ Changelog
 
 # 1.x release
 
-## v1.3.5 (master)
+## v1.4.0
 
 - Fix: numeric value in style property is not casted to string properly (thx @AaronHirsch)
 - Fix: saucelabs integration by removing android tests
